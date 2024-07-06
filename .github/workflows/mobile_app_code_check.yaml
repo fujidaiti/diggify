@@ -1,0 +1,111 @@
+name: Mobile App Code Check
+on:
+  push:
+    branches: main
+  pull_request:
+
+env:
+  FLUTTER_TEST_REPORT: ${{github.workspace}}/flutter-test-report.json
+  TARGET: ./app
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      # Set to true if any dart file has changed.
+      dart-file-changed: ${{ steps.filter.outputs.dart-file-changed }}
+      # Set to true if any test files exist in `TARGET/test` directory.
+      test-files-exist: ${{ steps.tests.outputs.files_exist }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Check for dart file changes
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: filter
+        with:
+          filters: |
+            dart-file-changed:
+              - '**.dart'
+
+      - name: Check if test files exist
+        id: tests
+        run: |
+          if find $TARGET/test -type f -name "*_test.dart" -quit 2>/dev/null; then
+            echo "files_exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "files_exist=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Report outputs
+        run: |
+          echo "dart-file-changed=${{ steps.filter.outputs.dart-file-changed }}"
+          echo "test-files-exist=${{ steps.tests.outputs.files_exist }}"
+
+  # Static code analysis
+  analysis:
+    needs: setup
+    if: ${{ needs.setup.outputs.dart-file-changed == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup_flutter
+        with:
+          target: ${{ env.TARGET }}
+
+      - name: Format
+        run: dart format . -o none --set-exit-if-changed
+        working-directory: ${{ env.TARGET }}
+
+      - name: Static analysis
+        run: dart analyze
+        working-directory: ${{ env.TARGET }}
+
+  # Unit testing
+  testing:
+    needs: setup
+    if: ${{ needs.setup.outputs.dart-file-changed == 'true' && needs.setup.outputs.test-files-exist == 'true'}}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      checks: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup_flutter
+        with:
+          target: ${{ env.TARGET }}
+
+      - name: Run unit tests
+        run: flutter test --file-reporter="json:${{ env.FLUTTER_TEST_REPORT }}"
+        working-directory: ${{ env.TARGET }}
+
+      - name: Write test report
+        uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5 # v1.9.1
+        if: success() || failure()
+        with:
+          name: Test Report
+          path: ${{ env.FLUTTER_TEST_REPORT }}
+          reporter: flutter-json
+
+  # Final results (Used for status checks)
+  code-check:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: [analysis, testing]
+    steps:
+      # Fails if any of the previous jobs failed.
+      - run: exit 1
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+          }}
