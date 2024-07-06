@@ -10,11 +10,21 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Get Flutter SDK version from .fvmrc
+      run: |
+        if [ -f .fvmrc ]; then
+          FLUTTER_VERSION=$(cat .fvmrc | jq -r '.flutter')
+          echo "FLUTTER_VERSION=$FLUTTER_VERSION" >> $GITHUB_ENV
+        else
+          echo ".fvmrc file not found, using latest stable Flutter version."
+          echo "FLUTTER_VERSION=3.x" >> $GITHUB_ENV
+        fi
+
     - name: Install Flutter SDK
       uses: subosito/flutter-action@44ac965b96f18d999802d4b807e3256d5a3f9fa1 # v2.16.0
       with:
-        channel: stable
-        flutter-version: 3.x
+        channel: any
+        flutter-version: ${{ env.FLUTTER_VERSION }}
         cache: true
 
     - name: Flutter version
