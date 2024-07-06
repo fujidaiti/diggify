@@ -19,7 +19,8 @@ jobs:
       # Set to true if any test files exist in `TARGET/test` directory.
       test-files-exist: ${{ steps.tests.outputs.files_exist }}
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Check for dart file changes
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
@@ -37,6 +38,11 @@ jobs:
           else
             echo "files_exist=false" >> $GITHUB_OUTPUT
           fi
+      
+      - name: Report outputs
+        run: |
+          echo "dart-file-changed=${{ steps.filter.outputs.dart-file-changed }}"
+          echo "test-files-exist=${{ steps.tests.outputs.files_exist }}"
 
   # Static code analysis
   analysis:
