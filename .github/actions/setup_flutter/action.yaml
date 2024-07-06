@@ -19,6 +19,8 @@ runs:
           echo ".fvmrc file not found, using latest stable Flutter version."
           echo "FLUTTER_VERSION=3.x" >> $GITHUB_ENV
         fi
+      shell: bash
+      working-directory: ${{ inputs.target }}
 
     - name: Install Flutter SDK
       uses: subosito/flutter-action@44ac965b96f18d999802d4b807e3256d5a3f9fa1 # v2.16.0
