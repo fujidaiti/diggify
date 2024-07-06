@@ -6,9 +6,9 @@ enum HomeTab {
   listenNow('Listen Now'),
   listenLater('Listen Later');
 
-  final String label;
-
   const HomeTab(this.label);
+
+  final String label;
 }
 
 class Home extends HookWidget {
