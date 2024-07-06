@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  go_router: ^14.2.0
   hooks_riverpod: ^2.5.1
 
 dev_dependencies:
