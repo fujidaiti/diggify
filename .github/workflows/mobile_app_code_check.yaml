@@ -60,11 +60,11 @@ jobs:
 
       - name: Format
         run: dart format . -o none --set-exit-if-changed
-        working-directory: ${{ env.target }}
+        working-directory: ${{ env.TARGET }}
 
       - name: Static analysis
         run: dart analyze
-        working-directory: ${{ env.target }}
+        working-directory: ${{ env.TARGET }}
 
   # Unit testing
   testing:
@@ -86,7 +86,7 @@ jobs:
 
       - name: Run unit tests
         run: flutter test --file-reporter="json:${{ env.FLUTTER_TEST_REPORT }}"
-        working-directory: ${{ env.target }}
+        working-directory: ${{ env.TARGET }}
 
       - name: Write test report
         uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5 # v1.9.1
