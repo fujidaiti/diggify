@@ -8,3 +8,4 @@ linter:
     flutter_style_todos: false
     cascade_invocations: false
     unnecessary_parenthesis: false
+    sort_pub_dependencies: false
