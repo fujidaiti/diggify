@@ -1,1 +1,14 @@
-include: package:flutter_lints/flutter.yaml
+include: package:pedantic_mono/analysis_options.yaml
+analyzer:
+  plugins:
+    - custom_lint
+linter:
+  rules:
+    one_member_abstracts: false
+    avoid_redundant_argument_values: false
+    prefer_int_literals: false
+    flutter_style_todos: false
+    cascade_invocations: false
+    unnecessary_parenthesis: false
+    sort_pub_dependencies: false
+    require_trailing_commas: false

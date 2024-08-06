@@ -31,6 +31,11 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Automatically generated files
+*.g.dart
+*.freezed.dart
+*.gen.dart
+
 # Symbolication related
 app.*.symbols
 
