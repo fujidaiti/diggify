@@ -1,0 +1,7 @@
+[tasks.install]
+command = 'fvm'
+args = ['flutter', 'pub', 'add', '${@}']
+
+[tasks.gen]
+command = 'fvm'
+args = ['dart', 'run', 'build_runner', 'build', '--delete-conflicting-outputs']
