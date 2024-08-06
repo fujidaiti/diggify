@@ -1,4 +1,4 @@
-import 'package:diggify/pages/listen_later.dart';
+import 'package:diggify/pages/listen_later/listen_later_pane.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -40,7 +40,7 @@ class Home extends HookWidget {
           for (final tab in HomeTab.values)
             switch (tab) {
               HomeTab.listenNow => const Placeholder(),
-              HomeTab.listenLater => const ListenLater(),
+              HomeTab.listenLater => const ListenLaterPane(),
             },
         ],
       ),
