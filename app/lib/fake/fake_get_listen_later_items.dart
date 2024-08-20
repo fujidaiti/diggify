@@ -16,8 +16,8 @@ class _FakeGetListenLaterItems implements GetListenLaterItems {
     await fakeDelay();
     final prob = faker.randomGenerator.decimal();
     final itemCount = switch (prob) {
-      < 0.4 => throw Exception('Something went wrong!'),
-      < 0.9 => limit,
+      < 0.1 => throw Exception('Something went wrong!'),
+      < 0.8 => limit,
       _ => limit / 2,
     };
     return [

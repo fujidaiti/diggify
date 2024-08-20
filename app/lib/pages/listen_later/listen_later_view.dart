@@ -41,12 +41,25 @@ class _ListenLaterListView extends ConsumerWidget {
         itemBuilder: (context, index) {
           if (index < items.length) {
             return switch (items[index]) {
-              final ListenLaterTrack track =>
-                ListTile(title: Text(track.title)),
-              final ListenLaterAlbum album =>
-                ListTile(title: Text(album.title)),
-              final ListenLaterArtist artist =>
-                ListTile(title: Text(artist.name)),
+              final ListenLaterTrack track => ListenLaterItemTile.track(
+                  thumbnail: track.thumbnail,
+                  title: track.title,
+                  albumTitle: track.album.title,
+                  artistName: track.artists.first.name,
+                  onPressed: () {},
+                ),
+              final ListenLaterAlbum album => ListenLaterItemTile.album(
+                  thumbnail: album.thumbnail,
+                  title: album.title,
+                  artistName: album.artists.first.name,
+                  releaseYear: album.releaseYear,
+                  onPressed: () {},
+                ),
+              final ListenLaterArtist artist => ListenLaterItemTile.artist(
+                  thumbnail: artist.thumbnail,
+                  name: artist.name,
+                  onPressed: () {},
+                ),
             };
           } else {
             return const _ListenLaterListFooter();
