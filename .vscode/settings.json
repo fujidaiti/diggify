@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["Diggify"]
+  "cSpell.words": ["Diggify"],
+  "cSpell.ignorePaths": [
+    ".vscode/",
+    "pubspec.yaml",
+    "pubspec.lock",
+    "*.g.dart",
+    "*.freezed.dart",
+    "*.gen.dart"
+  ]
 }
